@@ -1,1 +1,1 @@
-/usr/bin/cc -g   CMakeFiles/tau_os_ex4.dir/main.c.o  -o tau_os_ex4 
+/usr/bin/cc -g   CMakeFiles/tau_os_ex4.dir/pfind.c.o  -o tau_os_ex4  -pthread 

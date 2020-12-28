@@ -143,32 +143,32 @@ tau_os_ex4/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tau_os_ex4.dir/build.make CMakeFiles/tau_os_ex4.dir/build
 .PHONY : tau_os_ex4/fast
 
-main.o: main.c.o
+pfind.o: pfind.c.o
 
-.PHONY : main.o
+.PHONY : pfind.o
 
 # target to build an object file
-main.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tau_os_ex4.dir/build.make CMakeFiles/tau_os_ex4.dir/main.c.o
-.PHONY : main.c.o
+pfind.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tau_os_ex4.dir/build.make CMakeFiles/tau_os_ex4.dir/pfind.c.o
+.PHONY : pfind.c.o
 
-main.i: main.c.i
+pfind.i: pfind.c.i
 
-.PHONY : main.i
+.PHONY : pfind.i
 
 # target to preprocess a source file
-main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tau_os_ex4.dir/build.make CMakeFiles/tau_os_ex4.dir/main.c.i
-.PHONY : main.c.i
+pfind.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tau_os_ex4.dir/build.make CMakeFiles/tau_os_ex4.dir/pfind.c.i
+.PHONY : pfind.c.i
 
-main.s: main.c.s
+pfind.s: pfind.c.s
 
-.PHONY : main.s
+.PHONY : pfind.s
 
 # target to generate assembly for a file
-main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tau_os_ex4.dir/build.make CMakeFiles/tau_os_ex4.dir/main.c.s
-.PHONY : main.c.s
+pfind.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tau_os_ex4.dir/build.make CMakeFiles/tau_os_ex4.dir/pfind.c.s
+.PHONY : pfind.c.s
 
 # Help Target
 help:
@@ -179,9 +179,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... tau_os_ex4"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... pfind.o"
+	@echo "... pfind.i"
+	@echo "... pfind.s"
 .PHONY : help
 
 

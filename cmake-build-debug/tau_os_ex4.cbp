@@ -76,7 +76,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/eran/CLionProjects/tau_os_ex4/main.c">
+		<Unit filename="/home/eran/CLionProjects/tau_os_ex4/pfind.c">
 			<Option target="tau_os_ex4"/>
 		</Unit>
 		<Unit filename="/home/eran/CLionProjects/tau_os_ex4/CMakeLists.txt">

@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/eran/CLionProjects/tau_os_ex4/pfind.c
+stdio.h
+-
+stdlib.h
+-
+limits.h
+-
+pthread.h
+-
+

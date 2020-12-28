@@ -224,3 +224,17 @@ Parsed C implicit link information from above output:
   implicit fwks: []
 
 
+Determining if the include file pthread.h exists passed with the following output:
+Change Dir: /home/eran/CLionProjects/tau_os_ex4/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_5c57e/fast && /usr/bin/make  -f CMakeFiles/cmTC_5c57e.dir/build.make CMakeFiles/cmTC_5c57e.dir/build
+make[1]: Entering directory '/home/eran/CLionProjects/tau_os_ex4/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5c57e.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -std=gnu11 -o CMakeFiles/cmTC_5c57e.dir/CheckIncludeFile.c.o   -c /home/eran/CLionProjects/tau_os_ex4/cmake-build-debug/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_5c57e
+/home/eran/softwares/clion-2019.3.4/bin/cmake/linux/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5c57e.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_5c57e.dir/CheckIncludeFile.c.o  -o cmTC_5c57e 
+make[1]: Leaving directory '/home/eran/CLionProjects/tau_os_ex4/cmake-build-debug/CMakeFiles/CMakeTmp'
+
+
+
