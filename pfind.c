@@ -4,9 +4,10 @@
 #include <pthread.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <string.h>
 
 typedef struct _QueueNode {
-    char *path[PATH_MAX];
+    char path[PATH_MAX];
     struct _QueueNode *next;
 } QueueNode;
 
@@ -55,11 +56,15 @@ int main(int argc, const char *argv[]) {
     const char *root = argv[1];
     const char *term = argv[2];
     const int thread_num = atoi(argv[3]);
-
+    QueueNode * rootNode=newQueueNode();
+    strcpy((rootNode->path),root);
+    insert(rootNode);
     for (int i = 0; i < thread_num; i++) {
         pthread_t thread_id;
+
         int rc = pthread_create(&thread_id, NULL, thread_func, NULL);
     }
+
     printf("Hello, World!\n");
     sleep(1);//@todo remove, with no sleep process halts before theads end
     return 0;
