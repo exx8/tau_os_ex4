@@ -7,28 +7,26 @@ typedef struct _QueueNode {
     struct _QueueNode *next;
 } QueueNode;
 
-static QueueNode * firstInLine=NULL;
+static QueueNode *firstInLine = NULL;
+
 QueueNode *newQueueNode() {
     return calloc(1, sizeof(QueueNode));
 }
 
-void insert(QueueNode* q)
-{
+void insert(QueueNode *q) {
 
-    if(firstInLine != NULL)
-    {
-        QueueNode * currentInLine=firstInLine;
+    if (firstInLine != NULL) {
+        QueueNode *currentInLine = firstInLine;
 
-        while(currentInLine->next!=NULL)
-        {
-            currentInLine=currentInLine->next;
+        while (currentInLine->next != NULL) {
+            currentInLine = currentInLine->next;
         }
-        currentInLine->next=q;
-    }
-    else
-        firstInLine=q;
+        currentInLine->next = q;
+    } else
+        firstInLine = q;
 
 }
+
 int main(int argc, const char *argv[]) {
     const char *root = argv[1];
     const char *term = argv[2];
