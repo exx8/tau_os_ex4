@@ -9,6 +9,9 @@ typedef struct _QueueNode {
 
 static QueueNode *firstInLine = NULL;
 
+static pthread_mutex_t queue_mutex;
+static pthread_cond_t queue_cv;
+
 QueueNode *newQueueNode() {
     return calloc(1, sizeof(QueueNode));
 }
