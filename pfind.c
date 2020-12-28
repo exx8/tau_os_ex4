@@ -66,6 +66,6 @@ int main(int argc, const char *argv[]) {
     }
 
     printf("Hello, World!\n");
-    sleep(1);//@todo remove, with no sleep process halts before theads end
+    sleep(1);//@todo remove, with no sleep process halts before threads end
     return 0;
 }
