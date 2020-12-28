@@ -1,0 +1,3 @@
+/home/eran/CLionProjects/tau_os_ex4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/eran/CLionProjects/tau_os_ex4/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/eran/CLionProjects/tau_os_ex4/cmake-build-debug/CMakeFiles/tau_os_ex4.dir
