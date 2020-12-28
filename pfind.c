@@ -33,6 +33,7 @@ void *thread_func(void *thread_param) {
     printf("In thread #%ld\n", pthread_self());
     printf("I received \"%s\" from my caller\n", (char *)thread_param);
 
+    pthread_detach(pthread_self());
     pthread_exit((void *)EXIT_SUCCESS);
     //return (void *)EXIT_SUCCESS;// <- same as this
 }
