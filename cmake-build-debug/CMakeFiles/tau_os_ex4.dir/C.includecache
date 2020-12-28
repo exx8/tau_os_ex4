@@ -15,4 +15,8 @@ limits.h
 -
 pthread.h
 -
+dirent.h
+-
+unistd.h
+-
 
