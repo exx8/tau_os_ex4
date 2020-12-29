@@ -13,8 +13,8 @@ typedef struct _QueueNode {
 
 static QueueNode *firstInLine = NULL;
 
-static pthread_mutex_t queue_mute = PTHREAD_MUTEX_INITIALIZER;
-static  queue_cv = PTHREAD_COND_INITIALIZER;
+static pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
+static queue_cv = PTHREAD_COND_INITIALIZER;
 
 QueueNode *newQueueNode() {
     return calloc(1, sizeof(QueueNode));
@@ -50,6 +50,12 @@ void *thread_func(void *thread_param) {
     dir(".");
     pthread_detach(pthread_self());
     pthread_exit((void *) EXIT_SUCCESS);
+}
+
+void brodacast() {
+    pthread_mutex_lock(&queue_mutex);
+
+
 }
 
 int main(int argc, const char *argv[]) {
