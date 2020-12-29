@@ -30,7 +30,7 @@ void insert(QueueNode *q, QueueNode *pNode) {
         }
         currentInLine->next = q;
     } else
-        pNode = q;
+        *pNode = *q;
 
 }
 
