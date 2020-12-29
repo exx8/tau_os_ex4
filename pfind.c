@@ -43,18 +43,21 @@ QueueNode *pop() {
     return top;
 }
 
-void dir(char *path) {
+QueueNode * dir(char *path) {
     struct dirent *dp;
     DIR *dirp;
     dirp = opendir(path);
+    QueueNode * localQueue=NULL;
     while ((dp = readdir(dirp)) != NULL) {
         QueueNode * newNode=newQueueNode();
         strcpy(newNode->path,path);
         strcat(newNode->path,"/");
         strcat(newNode->path,dp->d_name);
+        insert(newNode,localQueue);
 
     }
     closedir(dirp);
+    return localQueue;
 }
 
 void *thread_func(void *thread_param) {
