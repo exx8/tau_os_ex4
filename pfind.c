@@ -19,6 +19,7 @@ static pthread_cond_t queue_cv = PTHREAD_COND_INITIALIZER;
 QueueNode *newQueueNode() {
     return calloc(1, sizeof(QueueNode));
 }
+
 void wakeUpAll() {
     pthread_mutex_lock(&queue_mutex);
     pthread_cond_broadcast(&queue_cv);
@@ -28,7 +29,7 @@ void wakeUpAll() {
 void insert(QueueNode *q, QueueNode **pNode) {
 
     if (*pNode != NULL) {
-        QueueNode* currentInLine = pNode;
+        QueueNode *currentInLine = pNode;
 
         while (currentInLine->next != NULL) {
             currentInLine = currentInLine->next;
@@ -44,7 +45,7 @@ void insert(QueueNode *q, QueueNode **pNode) {
  */
 QueueNode *pop() {
     QueueNode *top = firstInLine;
-    if(top==NULL)
+    if (top == NULL)
         return NULL;
     firstInLine = firstInLine->next;
     return top;
@@ -61,7 +62,7 @@ QueueNode *dir(char *path) {
         strcat(newNode->path, "/");
         strcat(newNode->path, dp->d_name);
         insert(newNode, &localQueue);
-        printf("%s \n",newNode->path);
+        printf("%s \n", newNode->path);
 
     }
     closedir(dirp);
@@ -78,22 +79,26 @@ void wait4Signal() {
 
 void *thread_func(void *thread_param) {
 
-    pthread_mutex_lock(&queue_mutex);
 
-    QueueNode *popEle;
-    popEle = pop();
-    pthread_mutex_unlock(&queue_mutex);
-
+    QueueNode *popEle = NULL;
+    while (popEle == NULL) {
+        pthread_mutex_lock(&queue_mutex);
+        popEle = pop();
+        pthread_mutex_unlock(&queue_mutex);
+    }
 
     QueueNode *q = dir(popEle->path);
     pthread_mutex_lock(&queue_mutex);
-    insert(q, &firstInLine);
+    insert(q,
+           &firstInLine);
     pthread_mutex_unlock(&queue_mutex);
+
     wakeUpAll();
+
     pthread_detach(pthread_self());
+
     pthread_exit((void *) EXIT_SUCCESS);
 }
-
 
 
 int main(int argc, const char *argv[]) {
