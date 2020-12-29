@@ -77,6 +77,7 @@ void wait4Signal() {
 }
 
 void *thread_func(void *thread_param) {
+
     pthread_mutex_lock(&queue_mutex);
 
     QueueNode *popEle;
