@@ -44,6 +44,8 @@ void insert(QueueNode *q, QueueNode **pNode) {
  */
 QueueNode *pop() {
     QueueNode *top = firstInLine;
+    if(top==NULL)
+        return NULL;
     firstInLine = firstInLine->next;
     return top;
 }
