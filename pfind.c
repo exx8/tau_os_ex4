@@ -54,8 +54,8 @@ void *thread_func(void *thread_param) {
 
 void brodacast() {
     pthread_mutex_lock(&queue_mutex);
-
-
+    pthread_cond_broadcast(&queue_cv);
+    pthread_mutex_unlock(&queue_mutex);
 }
 
 int main(int argc, const char *argv[]) {
