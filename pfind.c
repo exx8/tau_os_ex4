@@ -34,6 +34,15 @@ void insert(QueueNode *q) {
 
 }
 
+/**
+ * @attention critical access only
+ */
+QueueNode *pop() {
+    QueueNode *top = firstInLine;
+    firstInLine = firstInLine->next;
+    return top;
+}
+
 void dir(char *path) {
     struct dirent *dp;
     DIR *dirp;
@@ -45,18 +54,29 @@ void dir(char *path) {
 }
 
 void *thread_func(void *thread_param) {
-    //printf("In thread #%ld\n", pthread_self());
-    //printf("I received \"%s\" from my caller\n", (char *) thread_param);
-    dir(".");
+    pthread_mutex_lock(&queue_mutex);
+
+    while (firstInLine == NULL) {
+        pthread_cond_wait(&queue_cv, &queue_mutex);
+    }
+    QueueNode *popEle;
+    popEle = pop();
+    pthread_mutex_unlock(&queue_mutex);
+
+
+    dir(popEle->path);
+    free(popEle);
+
     pthread_detach(pthread_self());
     pthread_exit((void *) EXIT_SUCCESS);
 }
 
-void brodacast() {
+void wakeUpAll() {
     pthread_mutex_lock(&queue_mutex);
     pthread_cond_broadcast(&queue_cv);
     pthread_mutex_unlock(&queue_mutex);
 }
+
 
 int main(int argc, const char *argv[]) {
     const char *root = argv[1];
@@ -70,6 +90,7 @@ int main(int argc, const char *argv[]) {
 
         int rc = pthread_create(&thread_id, NULL, thread_func, NULL);
     }
+    wakeUpAll();
 
     sleep(1);//@todo remove, with no sleep process halts before threads end
     return 0;
