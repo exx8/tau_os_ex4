@@ -5,6 +5,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/stat.h>
 
 typedef struct _QueueNode {
     char path[PATH_MAX];
@@ -51,12 +52,29 @@ QueueNode *pop() {
     return top;
 }
 
+int shouldTrack(const char *path) {
+    if (!strcmp(path, ".") || !strcmp(path, "..")) {
+        return 0;
+    }
+    struct stat fileStat;
+    lstat(path, &fileStat);
+    if (S_ISLNK(fileStat.st_mode))
+        return 0;
+    return S_ISDIR(fileStat.st_mode);
+
+}
+
 QueueNode *dir(char *path) {
     struct dirent *dp;
     DIR *dirp;
     dirp = opendir(path);
     QueueNode *localQueue = NULL;
     while ((dp = readdir(dirp)) != NULL) {
+
+
+        if (!shouldTrack(path)) {
+            continue;
+        }
         QueueNode *newNode = newQueueNode();
         strcpy(newNode->path, path);
         strcat(newNode->path, "/");
