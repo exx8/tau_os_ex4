@@ -14,7 +14,7 @@ typedef struct _QueueNode {
 static QueueNode *firstInLine = NULL;
 
 static pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
-static queue_cv = PTHREAD_COND_INITIALIZER;
+static pthread_cond_t queue_cv = PTHREAD_COND_INITIALIZER;
 
 QueueNode *newQueueNode() {
     return calloc(1, sizeof(QueueNode));
@@ -50,8 +50,8 @@ void dir(char *path) {
     while ((dp = readdir(dirp)) != NULL) {
         QueueNode * newNode=newQueueNode();
         strcpy(newNode->path,path);
-        strcat(&newNode->path,"/");
-        strcat(&newNode->path,&dp->d_name);
+        strcat(newNode->path,"/");
+        strcat(newNode->path,dp->d_name);
 
     }
     closedir(dirp);
