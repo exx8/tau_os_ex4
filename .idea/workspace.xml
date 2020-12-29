@@ -13,8 +13,8 @@
   <component name="ChangeListManager">
     <list default="true" id="881bb548-d427-49a8-9f50-53920ef69a56" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/tau_os_ex4.dir/pfind.c.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/tau_os_ex4.dir/pfind.c.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/tau_os_ex4" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/tau_os_ex4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pfind.c" beforeDir="false" afterPath="$PROJECT_DIR$/pfind.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -28,6 +28,13 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="hiddenUrls">
+      <set>
+        <option value="https://github.com/exx8/tau_os_ex4" />
+      </set>
+    </option>
   </component>
   <component name="ProjectId" id="1mIMuhTlh3bFeOcXgYHQtJQkXXl" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -71,6 +78,7 @@
       <updated>1609176875251</updated>
       <workItem from="1609176876572" duration="14710000" />
       <workItem from="1609232851952" duration="3058000" />
+      <workItem from="1609249734541" duration="617000" />
     </task>
     <task id="LOCAL-00001" summary=".">
       <created>1609177957377</created>
