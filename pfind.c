@@ -14,7 +14,7 @@ typedef struct _QueueNode {
 static QueueNode *firstInLine = NULL;
 
 static pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
-static queue_cv = PTHREAD_COND_INITIALIZER;
+static pthread_cond_t queue_cv = PTHREAD_COND_INITIALIZER;
 
 QueueNode *newQueueNode() {
     return calloc(1, sizeof(QueueNode));
@@ -43,18 +43,39 @@ QueueNode *pop() {
     return top;
 }
 
-void dir(char *path) {
+int count(char *path) {
     struct dirent *dp;
     DIR *dirp;
     dirp = opendir(path);
+    int count = 0;
     while ((dp = readdir(dirp)) != NULL) {
-        QueueNode * newNode=newQueueNode();
-        strcpy(newNode->path,path);
-        strcat(&newNode->path,"/");
-        strcat(&newNode->path,&dp->d_name);
-
+        if (dp->d_name == "." || dp->d_name == "..")
+            continue;
+        count++;
     }
     closedir(dirp);
+    return count;
+}
+
+QueueNode ** dir(char *path) {
+    int fileNumber = count(path);
+    QueueNode **arr=calloc(fileNumber,sizeof(arr));
+    struct dirent *dp;
+    DIR *dirp;
+    dirp = opendir(path);
+    int arr_index=0;
+    while ((dp = readdir(dirp)) != NULL) {
+        QueueNode *newNode = newQueueNode();
+        strcpy(newNode->path, path);
+        strcat(newNode->path, "/");
+        strcat(newNode->path, dp->d_name);
+        arr[arr_index]=newNode;
+        arr_index++;
+
+    }
+
+    closedir(dirp);
+    return arr;
 }
 
 void *thread_func(void *thread_param) {
