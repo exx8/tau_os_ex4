@@ -20,17 +20,17 @@ QueueNode *newQueueNode() {
     return calloc(1, sizeof(QueueNode));
 }
 
-void insert(QueueNode *q) {
+void insert(QueueNode *q, QueueNode *pNode) {
 
-    if (firstInLine != NULL) {
-        QueueNode *currentInLine = firstInLine;
+    if (pNode != NULL) {
+        QueueNode *currentInLine = pNode;
 
         while (currentInLine->next != NULL) {
             currentInLine = currentInLine->next;
         }
         currentInLine->next = q;
     } else
-        firstInLine = q;
+        pNode = q;
 
 }
 
@@ -88,7 +88,7 @@ int main(int argc, const char *argv[]) {
     const int thread_num = atoi(argv[3]);
     QueueNode *rootNode = newQueueNode();
     strcpy((rootNode->path), root);
-    insert(rootNode);
+    insert(rootNode, firstInLine);
     for (int i = 0; i < thread_num; i++) {
         pthread_t thread_id;
 
