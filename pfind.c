@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <stdatomic.h>
 
 typedef struct _QueueNode {
     char path[PATH_MAX];
@@ -16,7 +17,7 @@ static QueueNode *firstInLine = NULL;
 
 static pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t queue_cv = PTHREAD_COND_INITIALIZER;
-
+static atomic_int activeThreads=0;
 QueueNode *newQueueNode() {
     return calloc(1, sizeof(QueueNode));
 }
@@ -51,13 +52,13 @@ QueueNode *pop() {
     firstInLine = firstInLine->next;
     return top;
 }
-int endsWith(const char *str, const char *suffix)
-{
+
+int endsWith(const char *str, const char *suffix) {
     if (!str || !suffix)
         return 0;
     size_t lenstr = strlen(str);
     size_t lensuffix = strlen(suffix);
-    if (lensuffix >  lenstr)
+    if (lensuffix > lenstr)
         return 0;
     return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
 }
@@ -84,7 +85,6 @@ QueueNode *dir(char *path) {
     while ((dp = readdir(dirp)) != NULL) {
 
 
-
         QueueNode *newNode = newQueueNode();
         strcpy(newNode->path, path);
         strcat(newNode->path, "/");
@@ -93,40 +93,52 @@ QueueNode *dir(char *path) {
             continue;
         }
         insert(newNode, &localQueue);
-        printf("%s \n", newNode->path);
+        printf("%s \n",path);
 
     }
     closedir(dirp);
     return localQueue;
 }
 
-void wait4Signal() {
+void wait4FirstInLine() {
+    activeThreads--;
+    wakeUpAll();
     pthread_mutex_lock(&queue_mutex);
 
     while (firstInLine == NULL) {
         pthread_cond_wait(&queue_cv, &queue_mutex);
     }
 }
+void wait4ZeroActive() {
+    printf("%d",activeThreads);
+
+    while (activeThreads >0) {
+        pthread_mutex_lock(&queue_mutex);
+        printf("%d wait4Zero \n",activeThreads);
+        pthread_cond_wait(&queue_cv, &queue_mutex);
+        pthread_mutex_unlock(&queue_mutex);
+    }
+}
 
 void *thread_func(void *thread_param) {
 
+    //pthread_detach(pthread_self());
 
-    QueueNode *popEle = NULL;
-    while (popEle == NULL) {
+    while (1) {
+        printf("%d\n",activeThreads);
+        QueueNode *popEle = NULL;
+        while (popEle == NULL) {
+            wait4FirstInLine();
+            activeThreads++;
+            popEle = pop();
+            pthread_mutex_unlock(&queue_mutex);
+        }
+        QueueNode *q = dir(popEle->path);
         pthread_mutex_lock(&queue_mutex);
-        popEle = pop();
+        insert(q, &firstInLine);
         pthread_mutex_unlock(&queue_mutex);
+
     }
-
-    QueueNode *q = dir(popEle->path);
-    pthread_mutex_lock(&queue_mutex);
-    insert(q,
-           &firstInLine);
-    pthread_mutex_unlock(&queue_mutex);
-
-    wakeUpAll();
-
-    pthread_detach(pthread_self());
 
     pthread_exit((void *) EXIT_SUCCESS);
 }
@@ -143,9 +155,10 @@ int main(int argc, const char *argv[]) {
         pthread_t thread_id;
 
         int rc = pthread_create(&thread_id, NULL, thread_func, NULL);
+        activeThreads++;
     }
     wakeUpAll();
-
-    sleep(1);//@todo remove, with no sleep process halts before threads end
+    wait4ZeroActive();
+    pthread_mutex_unlock(&queue_mutex);
     return 0;
 }

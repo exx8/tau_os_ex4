@@ -13,6 +13,7 @@
   <component name="ChangeListManager">
     <list default="true" id="881bb548-d427-49a8-9f50-53920ef69a56" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/tau_os_ex4.dir/C.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/tau_os_ex4.dir/C.includecache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/tau_os_ex4.dir/pfind.c.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/tau_os_ex4.dir/pfind.c.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/tau_os_ex4" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/tau_os_ex4" afterDir="false" />
@@ -58,7 +59,7 @@
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RunManager">
-    <configuration name="tau_os_ex4" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="&quot;$PROJECT_DIR$&quot; &quot;a&quot; 30" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="tau_os_ex4" TARGET_NAME="tau_os_ex4" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="tau_os_ex4" RUN_TARGET_NAME="tau_os_ex4">
+    <configuration name="tau_os_ex4" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="&quot;$PROJECT_DIR$&quot; &quot;a&quot; 300" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="tau_os_ex4" TARGET_NAME="tau_os_ex4" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="tau_os_ex4" RUN_TARGET_NAME="tau_os_ex4">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -277,7 +278,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609278776147</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary=".">
+      <created>1609281565000</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1609281565000</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -303,23 +311,16 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <condition expression="activeThreads&gt;0" language="ObjectiveC" />
           <url>file://$PROJECT_DIR$/pfind.c</url>
-          <line>74</line>
-          <option name="timeStamp" value="40" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/pfind.c</url>
-          <line>70</line>
-          <option name="timeStamp" value="42" />
+          <line>114</line>
+          <option name="timeStamp" value="47" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
-        <watch expression="firstInLine" language="ObjectiveC" />
-        <watch expression="newNode-&gt;path" language="ObjectiveC" />
-        <watch expression="dp-&gt;d_type" language="ObjectiveC" />
-        <watch expression="dp" language="ObjectiveC" />
+        <watch expression="activeThreads" language="ObjectiveC" />
       </configuration>
     </watches-manager>
   </component>

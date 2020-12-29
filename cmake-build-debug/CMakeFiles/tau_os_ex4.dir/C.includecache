@@ -21,4 +21,8 @@ unistd.h
 -
 string.h
 -
+sys/stat.h
+-
+stdatomic.h
+-
 
