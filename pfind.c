@@ -51,9 +51,21 @@ QueueNode *pop() {
     firstInLine = firstInLine->next;
     return top;
 }
+int endsWith(const char *str, const char *suffix)
+{
+    if (!str || !suffix)
+        return 0;
+    size_t lenstr = strlen(str);
+    size_t lensuffix = strlen(suffix);
+    if (lensuffix >  lenstr)
+        return 0;
+    return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
+}
+
 
 int shouldTrack(const char *path) {
-    if (!strcmp(path, ".") || !strcmp(path, "..")) {
+
+    if (endsWith(path, "/.") || endsWith(path, "/..")) {
         return 0;
     }
     struct stat fileStat;
@@ -72,13 +84,14 @@ QueueNode *dir(char *path) {
     while ((dp = readdir(dirp)) != NULL) {
 
 
-        if (!shouldTrack(path)) {
-            continue;
-        }
+
         QueueNode *newNode = newQueueNode();
         strcpy(newNode->path, path);
         strcat(newNode->path, "/");
         strcat(newNode->path, dp->d_name);
+        if (!shouldTrack(newNode->path)) {
+            continue;
+        }
         insert(newNode, &localQueue);
         printf("%s \n", newNode->path);
 
