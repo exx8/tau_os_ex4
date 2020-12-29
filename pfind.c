@@ -43,37 +43,42 @@ QueueNode *pop() {
     return top;
 }
 
-QueueNode * dir(char *path) {
+QueueNode *dir(char *path) {
     struct dirent *dp;
     DIR *dirp;
     dirp = opendir(path);
-    QueueNode * localQueue=NULL;
+    QueueNode *localQueue = NULL;
     while ((dp = readdir(dirp)) != NULL) {
-        QueueNode * newNode=newQueueNode();
-        strcpy(newNode->path,path);
-        strcat(newNode->path,"/");
-        strcat(newNode->path,dp->d_name);
-        insert(newNode,localQueue);
+        QueueNode *newNode = newQueueNode();
+        strcpy(newNode->path, path);
+        strcat(newNode->path, "/");
+        strcat(newNode->path, dp->d_name);
+        insert(newNode, localQueue);
 
     }
     closedir(dirp);
     return localQueue;
 }
 
-void *thread_func(void *thread_param) {
+void getMonopol() {
     pthread_mutex_lock(&queue_mutex);
 
     while (firstInLine == NULL) {
         pthread_cond_wait(&queue_cv, &queue_mutex);
     }
+}
+
+void *thread_func(void *thread_param) {
+    getMonopol();
+
     QueueNode *popEle;
     popEle = pop();
     pthread_mutex_unlock(&queue_mutex);
 
 
-    dir(popEle->path);
-    free(popEle);
-
+    QueueNode *q = dir(popEle->path);
+    getMonopol();
+    insert(q, firstInLine);
     pthread_detach(pthread_self());
     pthread_exit((void *) EXIT_SUCCESS);
 }
