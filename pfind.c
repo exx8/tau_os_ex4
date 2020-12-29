@@ -48,7 +48,11 @@ void dir(char *path) {
     DIR *dirp;
     dirp = opendir(path);
     while ((dp = readdir(dirp)) != NULL) {
-        printf("%s \n", dp->d_name);
+        QueueNode * newNode=newQueueNode();
+        strcpy(newNode->path,path);
+        strcat(&newNode->path,"/");
+        strcat(&newNode->path,&dp->d_name);
+        printf("%s \n", newNode->path);
     }
     closedir(dirp);
 }
