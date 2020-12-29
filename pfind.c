@@ -65,7 +65,6 @@ int main(int argc, const char *argv[]) {
         int rc = pthread_create(&thread_id, NULL, thread_func, NULL);
     }
 
-    printf("Hello, World!\n");
     sleep(1);//@todo remove, with no sleep process halts before threads end
     return 0;
 }
