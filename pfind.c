@@ -97,11 +97,16 @@ void debug2(const QueueNode *newNode) {
     return;
     printf("%s \n", newNode->path);
 }
-
-void printIfFileAndMatches(const char *term, const char *path,const char * name) {
-    if (isAfile(path)) {
+/**
+ *
+ * @param term
+ * @param full_path the path must contain name!!!
+ * @param name
+ */
+void printIfFileAndMatches(const char *term, const char *full_path, const char * name) {
+    if (isAfile(full_path)) {
         if (strstr(name, term) != NULL) {
-            printf("%s\n", path);
+            printf("%s\n", full_path);
         }
     }
 }
