@@ -52,7 +52,9 @@ QueueNode *pop() {
     firstInLine = firstInLine->next;
     return top;
 }
-
+/**
+ * @copyright https://stackoverflow.com/questions/744766/how-to-compare-ends-of-strings-in-c/744822#744822
+ */
 int endsWith(const char *str, const char *suffix) {
     if (!str || !suffix)
         return 0;
