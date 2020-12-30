@@ -253,7 +253,9 @@ int main(int argc, char *argv[]) {
     const int thread_num = atoi(argv[3]);
     QueueNode *rootNode = newQueueNode();
     strcpy((rootNode->path), root);
-    insert(rootNode, &firstInLine);
+    if (shouldTrack(root, checkErrMain)) {
+        insert(rootNode, &firstInLine);
+    }
     for (int i = 0; i < thread_num; i++) {
         pthread_t thread_id;
 
