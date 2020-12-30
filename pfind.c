@@ -30,6 +30,7 @@ void exit_with_error_main(char *errorMsg) {
 void exit_with_error_thread(char *errorMsg) {
     fprintf(stderr, "%s", errorMsg);
     activeThreads--;
+    pthread_cond_broadcast(&queue_cv);
     pthread_exit(1);
 }
 
