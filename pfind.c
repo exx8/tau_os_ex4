@@ -91,11 +91,11 @@ QueueNode *dir(char *path) {
         strcpy(newNode->path, path);
         strcat(newNode->path, "/");
         strcat(newNode->path, dp->d_name);
+        printf("%s \n",newNode->path);
         if (!shouldTrack(newNode->path)) {
             continue;
         }
         insert(newNode, &localQueue);
-        printf("%s \n",newNode->path);
 
     }
     closedir(dirp);
