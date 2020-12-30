@@ -72,8 +72,7 @@ int isAfile(const char *path) {
 
     struct stat fileStat;
     lstat(path, &fileStat);
-    if(S_ISREG(fileStat.st_mode))
-    {
+    if (S_ISREG(fileStat.st_mode)) {
         return 1;
     }
     return 0;
@@ -94,19 +93,20 @@ int shouldTrack(const char *path) {
 
 }
 
-void debug2(const QueueNode *newNode) { printf("%s \n", newNode->path); }
+void debug2(const QueueNode *newNode) {
+    return;
+    printf("%s \n", newNode->path);
+}
 
-void printIfFileAndMatches(const char *term, const QueueNode *newNode) {
-    if(isAfile(newNode->path))
-    {
-        if(strstr(newNode->path, term) != NULL)
-        {
-            printf("%s",newNode->path);
+void printIfFileAndMatches(const char *term, const char *path,const char * name) {
+    if (isAfile(path)) {
+        if (strstr(name, term) != NULL) {
+            printf("%s\n", path);
         }
     }
 }
 
-QueueNode *dir(char *path, char* term) {
+QueueNode *dir(char *path, char *term) {
     struct dirent *dp;
     DIR *dirp;
     dirp = opendir(path);
@@ -119,7 +119,7 @@ QueueNode *dir(char *path, char* term) {
         strcat(newNode->path, "/");
         strcat(newNode->path, dp->d_name);
         debug2(newNode);
-        printIfFileAndMatches(term, newNode);
+        printIfFileAndMatches(term, newNode->path,dp->d_name);
         if (!shouldTrack(newNode->path)) {
             continue;
         }
@@ -140,9 +140,15 @@ void wait4FirstInLine() {
     }
 }
 
-void debug1() { printf("%d wait4Zero \n", activeThreads); }
+void debug1() {
+    return;
+    printf("%d wait4Zero \n", activeThreads);
+}
 
-void debug3() { printf("%d before loop \n", activeThreads); }
+void debug3() {
+    return;
+    printf("%d before loop \n", activeThreads);
+}
 
 void wait4ZeroActive() {
     debug3();
@@ -167,7 +173,7 @@ void *thread_func(void *thread_param) {
             popEle = pop();
             pthread_mutex_unlock(&queue_mutex);
         }
-        QueueNode *q = dir(popEle->path,thread_param);
+        QueueNode *q = dir(popEle->path, thread_param);
         pthread_mutex_lock(&queue_mutex);
         insert(q, &firstInLine);
         pthread_cond_broadcast(&queue_cv);
@@ -179,7 +185,7 @@ void *thread_func(void *thread_param) {
 }
 
 void exit_with_error(char *errorMsg) {
-    fprintf(stderr, "%s",errorMsg);
+    fprintf(stderr, "%s", errorMsg);
     exit(1);
 }
 
@@ -189,10 +195,10 @@ void check_args(int argc) {
     }
 }
 
-int main(int argc,  char *argv[]) {
+int main(int argc, char *argv[]) {
     check_args(argc);
     const char *root = argv[1];
-     char *term = argv[2];
+    char *term = argv[2];
     const int thread_num = atoi(argv[3]);
     QueueNode *rootNode = newQueueNode();
     strcpy((rootNode->path), root);
