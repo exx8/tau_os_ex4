@@ -32,7 +32,7 @@ void wakeUpAll() {
 void insert(QueueNode *q, QueueNode **pNode) {
 
     if (*pNode != NULL) {
-        QueueNode *currentInLine = pNode;
+        QueueNode *currentInLine = *pNode;
 
         while (currentInLine->next != NULL) {
             currentInLine = currentInLine->next;
@@ -96,6 +96,7 @@ QueueNode *dir(char *path) {
         strcat(newNode->path, "/");
         strcat(newNode->path, dp->d_name);
         debug2(newNode);
+
         if (!shouldTrack(newNode->path)) {
             continue;
         }
@@ -168,7 +169,7 @@ void check_args(int argc) {
 int main(int argc, const char *argv[]) {
     check_args(argc);
     const char *root = argv[1];
-    const char *term = argv[2];
+     char *term = argv[2];
     const int thread_num = atoi(argv[3]);
     QueueNode *rootNode = newQueueNode();
     strcpy((rootNode->path), root);
@@ -176,7 +177,7 @@ int main(int argc, const char *argv[]) {
     for (int i = 0; i < thread_num; i++) {
         pthread_t thread_id;
 
-        int rc = pthread_create(&thread_id, NULL, thread_func, NULL);
+        int rc = pthread_create(&thread_id, NULL, thread_func, term);
         activeThreads++;
     }
     wakeUpAll();
