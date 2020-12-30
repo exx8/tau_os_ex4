@@ -94,7 +94,7 @@ int shouldTrack(const char *path) {
     int isdir = S_ISDIR(mode);
     if (!isdir)
         return 0;
-    if (!(mode & S_IRUSR && mode & S_IXUSR)) {
+    if (!(mode & S_IRUSR )) {
         printf("Directory %s: Permission denied.\n",path);
         return 0;
     }
@@ -208,6 +208,10 @@ void check_args(int argc) {
     if (argc != 4) {
         exit_with_error("invalid num of args");
     }
+}
+void generic_err()
+{
+    exit_with_error("an error has occurred");
 }
 
 int main(int argc, char *argv[]) {
