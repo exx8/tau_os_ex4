@@ -20,14 +20,38 @@ static pthread_cond_t queue_cv = PTHREAD_COND_INITIALIZER;
 static atomic_int activeThreads = 0;
 static atomic_bool errInThread=0;
 static atomic_int howManyFiles=0;
-QueueNode *newQueueNode() {
-    return calloc(1, sizeof(QueueNode));
+
+void exit_with_error(char *errorMsg) {
+    fprintf(stderr, "%s", errorMsg);
+    exit(1);
 }
 
+void check_args(int argc) {
+    if (argc != 4) {
+        exit_with_error("invalid num of args");
+    }
+}
+void generic_err()
+{
+    exit_with_error("an error has occurred");
+}
+void checkErr(int status)
+{
+    if(status!=0)
+    {
+        generic_err();
+    }
+}
+QueueNode *newQueueNode() {
+    void *pVoid = calloc(1, sizeof(QueueNode));
+    if(!pVoid)
+        generic_err();
+        return pVoid;
+}
 void wakeUpAll() {
-    pthread_mutex_lock(&queue_mutex);
-    pthread_cond_broadcast(&queue_cv);
-    pthread_mutex_unlock(&queue_mutex);
+    checkErr(pthread_mutex_lock(&queue_mutex));
+    checkErr(pthread_cond_broadcast(&queue_cv));
+    checkErr(pthread_mutex_unlock(&queue_mutex));
 }
 
 void insert(QueueNode *q, QueueNode **pNode) {
@@ -72,7 +96,7 @@ int isAfile(const char *path) {
 
 
     struct stat fileStat;
-    lstat(path, &fileStat);
+    checkErr(lstat(path, &fileStat));
     if (S_ISREG(fileStat.st_mode)) {
         return 1;
     }
@@ -87,7 +111,7 @@ int shouldTrack(const char *path) {
         return 0;
     }
     struct stat fileStat;
-    lstat(path, &fileStat);
+    checkErr(lstat(path, &fileStat));
     const __mode_t mode = fileStat.st_mode;
     if (S_ISLNK(mode))
         return 0;
@@ -148,10 +172,10 @@ QueueNode *dir(char *path, char *term) {
 void wait4FirstInLine() {
     activeThreads--;
     wakeUpAll();
-    pthread_mutex_lock(&queue_mutex);
+    checkErr(pthread_mutex_lock(&queue_mutex));
 
     while (firstInLine == NULL) {
-        pthread_cond_wait(&queue_cv, &queue_mutex);
+        checkErr(pthread_cond_wait(&queue_cv, &queue_mutex));
     }
 }
 
@@ -169,10 +193,10 @@ void wait4ZeroActive() {
     debug3();
 
     while (activeThreads > 0) {
-        pthread_mutex_lock(&queue_mutex);
+        checkErr(pthread_mutex_lock(&queue_mutex));
         debug1();
-        pthread_cond_wait(&queue_cv, &queue_mutex);
-        pthread_mutex_unlock(&queue_mutex);
+        checkErr(pthread_cond_wait(&queue_cv, &queue_mutex));
+        checkErr(pthread_mutex_unlock(&queue_mutex));
     }
 }
 
@@ -186,33 +210,18 @@ void *thread_func(void *thread_param) {
             wait4FirstInLine();
             activeThreads++;
             popEle = pop();
-            pthread_mutex_unlock(&queue_mutex);
+            checkErr(pthread_mutex_unlock(&queue_mutex));
         }
         QueueNode *q = dir(popEle->path, thread_param);
-        pthread_mutex_lock(&queue_mutex);
+        checkErr(pthread_mutex_lock(&queue_mutex));
         insert(q, &firstInLine);
-        pthread_cond_broadcast(&queue_cv);
-        pthread_mutex_unlock(&queue_mutex);
+        checkErr(pthread_cond_broadcast(&queue_cv));
+        checkErr(pthread_mutex_unlock(&queue_mutex));
 
     }
 
-    pthread_exit((void *) EXIT_SUCCESS);
 }
 
-void exit_with_error(char *errorMsg) {
-    fprintf(stderr, "%s", errorMsg);
-    exit(1);
-}
-
-void check_args(int argc) {
-    if (argc != 4) {
-        exit_with_error("invalid num of args");
-    }
-}
-void generic_err()
-{
-    exit_with_error("an error has occurred");
-}
 
 int main(int argc, char *argv[]) {
     check_args(argc);
