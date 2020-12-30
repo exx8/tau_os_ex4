@@ -81,6 +81,8 @@ int shouldTrack(const char *path) {
 
 }
 
+void debug2(const QueueNode *newNode) { printf("%s \n", newNode->path); }
+
 QueueNode *dir(char *path) {
     struct dirent *dp;
     DIR *dirp;
@@ -93,7 +95,7 @@ QueueNode *dir(char *path) {
         strcpy(newNode->path, path);
         strcat(newNode->path, "/");
         strcat(newNode->path, dp->d_name);
-        printf("%s \n", newNode->path);
+        debug2(newNode);
         if (!shouldTrack(newNode->path)) {
             continue;
         }
@@ -114,12 +116,16 @@ void wait4FirstInLine() {
     }
 }
 
+void debug1() { printf("%d wait4Zero \n", activeThreads); }
+
+void debug3() { printf("%d before loop \n", activeThreads); }
+
 void wait4ZeroActive() {
-    printf("%d before loop \n", activeThreads);
+    debug3();
 
     while (activeThreads > 0) {
         pthread_mutex_lock(&queue_mutex);
-        printf("%d wait4Zero \n", activeThreads);
+        debug1();
         pthread_cond_wait(&queue_cv, &queue_mutex);
         pthread_mutex_unlock(&queue_mutex);
     }
