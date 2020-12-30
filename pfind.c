@@ -7,6 +7,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <stdatomic.h>
+#include <errno.h>
 
 typedef struct _QueueNode {
     char path[PATH_MAX];
@@ -18,13 +19,14 @@ static QueueNode *firstInLine = NULL;
 static pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t queue_cv = PTHREAD_COND_INITIALIZER;
 static atomic_int activeThreads = 0;
-static atomic_bool errInThread=0;
-static atomic_int howManyFiles=0;
+static atomic_bool errInThread = 0;
+static atomic_int howManyFiles = 0;
 
 void exit_with_error_main(char *errorMsg) {
     fprintf(stderr, "%s", errorMsg);
     exit(1);
 }
+
 void exit_with_error_thread(char *errorMsg) {
     fprintf(stderr, "%s", errorMsg);
     activeThreads--;
@@ -36,34 +38,34 @@ void check_args(int argc) {
         exit_with_error_main("invalid num of args");
     }
 }
-void genericErrMain()
-{
+
+void genericErrMain() {
     exit_with_error_main("an error has occurred");
 }
-void genericErrThread()
-{
+
+void genericErrThread() {
     exit_with_error_thread("an error has occurred");
 }
-void checkErrMain(int status)
-{
-    if(status!=0)
-    {
+
+void checkErrMain(int status) {
+    if (status != 0) {
         genericErrMain();
     }
 }
-void checkErrThread(int status)
-{
-    if(status!=0)
-    {
+
+void checkErrThread(int status) {
+    if (status != 0) {
         genericErrThread();
     }
 }
+
 QueueNode *newQueueNode() {
     void *pVoid = calloc(1, sizeof(QueueNode));
-    if(!pVoid)
+    if (!pVoid)
         genericErrMain();
-        return pVoid;
+    return pVoid;
 }
+
 void wakeUpAll() {
     checkErrMain(pthread_mutex_lock(&queue_mutex));
     checkErrMain(pthread_cond_broadcast(&queue_cv));
@@ -134,8 +136,8 @@ int shouldTrack(const char *path) {
     int isdir = S_ISDIR(mode);
     if (!isdir)
         return 0;
-    if (!(mode & S_IRUSR )) {
-        printf("Directory %s: Permission denied.\n",path);
+    if (!(mode & S_IRUSR)) {
+        printf("Directory %s: Permission denied.\n", path);
         return 0;
     }
     return 1;
@@ -161,15 +163,15 @@ void checkIfFileAndProcess(const char *term, const char *full_path, const char *
     }
 }
 
-QueueNode *dir(char *path, char *term,void(*errChecker)(int) ) {
+QueueNode *dir(char *path, char *term, void(*errChecker)(int)) {
     struct dirent *dp;
     DIR *dirp;
     dirp = opendir(path);
-    if(dirp==NULL)
-    {
+    if (dirp == NULL) {
         errChecker(-1);
     }
     QueueNode *localQueue = NULL;
+    errno = 0;
     while ((dp = readdir(dirp)) != NULL) {
 
 
@@ -183,8 +185,9 @@ QueueNode *dir(char *path, char *term,void(*errChecker)(int) ) {
             continue;
         }
         insert(newNode, &localQueue);
-
+        errno = 0;
     }
+    errChecker(errno);
     closedir(dirp);
     return localQueue;
 }
@@ -232,7 +235,7 @@ void *thread_func(void *thread_param) {
             popEle = pop();
             checkErrThread(pthread_mutex_unlock(&queue_mutex));
         }
-        QueueNode *q = dir(popEle->path, thread_param,checkErrThread);
+        QueueNode *q = dir(popEle->path, thread_param, checkErrThread);
         checkErrThread(pthread_mutex_lock(&queue_mutex));
         insert(q, &firstInLine);
         checkErrThread(pthread_cond_broadcast(&queue_cv));
@@ -259,6 +262,6 @@ int main(int argc, char *argv[]) {
     }
     wakeUpAll();
     wait4ZeroActive();
-    printf("Done searching, found %d files\n",howManyFiles);
+    printf("Done searching, found %d files\n", howManyFiles);
     return errInThread;
 }
