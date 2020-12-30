@@ -31,7 +31,7 @@ void exit_with_error_thread(char *errorMsg) {
     fprintf(stderr, "%s", errorMsg);
     activeThreads--;
     pthread_cond_broadcast(&queue_cv);
-    pthread_exit(1);
+    pthread_exit(NULL);
 }
 
 void check_args(int argc) {
@@ -68,9 +68,7 @@ QueueNode *newQueueNode() {
 }
 
 void wakeUpAll() {
-    checkErrMain(pthread_mutex_lock(&queue_mutex));
     checkErrMain(pthread_cond_broadcast(&queue_cv));
-    checkErrMain(pthread_mutex_unlock(&queue_mutex));
 }
 
 void insert(QueueNode *q, QueueNode **pNode) {
