@@ -17,7 +17,8 @@ static QueueNode *firstInLine = NULL;
 
 static pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t queue_cv = PTHREAD_COND_INITIALIZER;
-static atomic_int activeThreads=0;
+static atomic_int activeThreads = 0;
+
 QueueNode *newQueueNode() {
     return calloc(1, sizeof(QueueNode));
 }
@@ -52,6 +53,7 @@ QueueNode *pop() {
     firstInLine = firstInLine->next;
     return top;
 }
+
 /**
  * @copyright https://stackoverflow.com/questions/744766/how-to-compare-ends-of-strings-in-c/744822#744822
  */
@@ -91,7 +93,7 @@ QueueNode *dir(char *path) {
         strcpy(newNode->path, path);
         strcat(newNode->path, "/");
         strcat(newNode->path, dp->d_name);
-        printf("%s \n",newNode->path);
+        printf("%s \n", newNode->path);
         if (!shouldTrack(newNode->path)) {
             continue;
         }
@@ -111,12 +113,13 @@ void wait4FirstInLine() {
         pthread_cond_wait(&queue_cv, &queue_mutex);
     }
 }
-void wait4ZeroActive() {
-    printf("%d before loop \n",activeThreads);
 
-    while (activeThreads >0) {
+void wait4ZeroActive() {
+    printf("%d before loop \n", activeThreads);
+
+    while (activeThreads > 0) {
         pthread_mutex_lock(&queue_mutex);
-        printf("%d wait4Zero \n",activeThreads);
+        printf("%d wait4Zero \n", activeThreads);
         pthread_cond_wait(&queue_cv, &queue_mutex);
         pthread_mutex_unlock(&queue_mutex);
     }
@@ -145,8 +148,19 @@ void *thread_func(void *thread_param) {
     pthread_exit((void *) EXIT_SUCCESS);
 }
 
+void exit_with_error(char *errorMsg) {
+    fprintf(stderr, errorMsg);
+    exit(1);
+}
+
+void check_args(int argc) {
+    if (argc != 4) {
+        exit_with_error("invalid num of args");
+    }
+}
 
 int main(int argc, const char *argv[]) {
+    check_args(argc);
     const char *root = argv[1];
     const char *term = argv[2];
     const int thread_num = atoi(argv[3]);
