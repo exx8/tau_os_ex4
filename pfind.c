@@ -18,7 +18,8 @@ static QueueNode *firstInLine = NULL;
 static pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t queue_cv = PTHREAD_COND_INITIALIZER;
 static atomic_int activeThreads = 0;
-
+static atomic_bool errInThread=0;
+static atomic_int howManyFiles=0;
 QueueNode *newQueueNode() {
     return calloc(1, sizeof(QueueNode));
 }
@@ -111,8 +112,9 @@ void debug2(const QueueNode *newNode) {
  * @param full_path the path must contain name!!!
  * @param name
  */
-void printIfFileAndMatches(const char *term, const char *full_path, const char *name) {
+void checkIfFileAndProcess(const char *term, const char *full_path, const char *name) {
     if (isAfile(full_path)) {
+        howManyFiles++;
         if (strstr(name, term) != NULL) {
             printf("%s\n", full_path);
         }
@@ -132,7 +134,7 @@ QueueNode *dir(char *path, char *term) {
         strcat(newNode->path, "/");
         strcat(newNode->path, dp->d_name);
         debug2(newNode);
-        printIfFileAndMatches(term, newNode->path, dp->d_name);
+        checkIfFileAndProcess(term, newNode->path, dp->d_name);
         if (!shouldTrack(newNode->path)) {
             continue;
         }
@@ -224,5 +226,6 @@ int main(int argc, char *argv[]) {
     }
     wakeUpAll();
     wait4ZeroActive();
-    return 0;
+    printf("Done searching, found %d files\n",howManyFiles);
+    return errInThread;
 }
