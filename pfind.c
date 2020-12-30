@@ -156,7 +156,7 @@ void *thread_func(void *thread_param) {
 }
 
 void exit_with_error(char *errorMsg) {
-    fprintf(stderr, errorMsg);
+    fprintf(stderr, "%s",errorMsg);
     exit(1);
 }
 
@@ -166,7 +166,7 @@ void check_args(int argc) {
     }
 }
 
-int main(int argc, const char *argv[]) {
+int main(int argc,  char *argv[]) {
     check_args(argc);
     const char *root = argv[1];
      char *term = argv[2];
