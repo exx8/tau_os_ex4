@@ -21,37 +21,53 @@ static atomic_int activeThreads = 0;
 static atomic_bool errInThread=0;
 static atomic_int howManyFiles=0;
 
-void exit_with_error(char *errorMsg) {
+void exit_with_error_main(char *errorMsg) {
     fprintf(stderr, "%s", errorMsg);
     exit(1);
+}
+void exit_with_error_thread(char *errorMsg) {
+    fprintf(stderr, "%s", errorMsg);
+    activeThreads--;
+    pthread_exit(1);
 }
 
 void check_args(int argc) {
     if (argc != 4) {
-        exit_with_error("invalid num of args");
+        exit_with_error_main("invalid num of args");
     }
 }
-void generic_err()
+void genericErrMain()
 {
-    exit_with_error("an error has occurred");
+    exit_with_error_main("an error has occurred");
 }
-void checkErr(int status)
+void genericErrThread()
+{
+    exit_with_error_thread("an error has occurred");
+}
+void checkErrMain(int status)
 {
     if(status!=0)
     {
-        generic_err();
+        genericErrMain();
+    }
+}
+void checkErrThread(int status)
+{
+    if(status!=0)
+    {
+        genericErrThread();
     }
 }
 QueueNode *newQueueNode() {
     void *pVoid = calloc(1, sizeof(QueueNode));
     if(!pVoid)
-        generic_err();
+        genericErrMain();
         return pVoid;
 }
 void wakeUpAll() {
-    checkErr(pthread_mutex_lock(&queue_mutex));
-    checkErr(pthread_cond_broadcast(&queue_cv));
-    checkErr(pthread_mutex_unlock(&queue_mutex));
+    checkErrMain(pthread_mutex_lock(&queue_mutex));
+    checkErrMain(pthread_cond_broadcast(&queue_cv));
+    checkErrMain(pthread_mutex_unlock(&queue_mutex));
 }
 
 void insert(QueueNode *q, QueueNode **pNode) {
@@ -96,7 +112,7 @@ int isAfile(const char *path) {
 
 
     struct stat fileStat;
-    checkErr(lstat(path, &fileStat));
+    checkErrMain(lstat(path, &fileStat));
     if (S_ISREG(fileStat.st_mode)) {
         return 1;
     }
@@ -111,7 +127,7 @@ int shouldTrack(const char *path) {
         return 0;
     }
     struct stat fileStat;
-    checkErr(lstat(path, &fileStat));
+    checkErrMain(lstat(path, &fileStat));
     const __mode_t mode = fileStat.st_mode;
     if (S_ISLNK(mode))
         return 0;
@@ -145,10 +161,14 @@ void checkIfFileAndProcess(const char *term, const char *full_path, const char *
     }
 }
 
-QueueNode *dir(char *path, char *term) {
+QueueNode *dir(char *path, char *term,void(*errChecker)(int) ) {
     struct dirent *dp;
     DIR *dirp;
     dirp = opendir(path);
+    if(dirp==NULL)
+    {
+        errChecker(-1);
+    }
     QueueNode *localQueue = NULL;
     while ((dp = readdir(dirp)) != NULL) {
 
@@ -172,10 +192,10 @@ QueueNode *dir(char *path, char *term) {
 void wait4FirstInLine() {
     activeThreads--;
     wakeUpAll();
-    checkErr(pthread_mutex_lock(&queue_mutex));
+    checkErrThread(pthread_mutex_lock(&queue_mutex));
 
     while (firstInLine == NULL) {
-        checkErr(pthread_cond_wait(&queue_cv, &queue_mutex));
+        checkErrThread(pthread_cond_wait(&queue_cv, &queue_mutex));
     }
 }
 
@@ -193,10 +213,10 @@ void wait4ZeroActive() {
     debug3();
 
     while (activeThreads > 0) {
-        checkErr(pthread_mutex_lock(&queue_mutex));
+        checkErrMain(pthread_mutex_lock(&queue_mutex));
         debug1();
-        checkErr(pthread_cond_wait(&queue_cv, &queue_mutex));
-        checkErr(pthread_mutex_unlock(&queue_mutex));
+        checkErrMain(pthread_cond_wait(&queue_cv, &queue_mutex));
+        checkErrMain(pthread_mutex_unlock(&queue_mutex));
     }
 }
 
@@ -210,13 +230,13 @@ void *thread_func(void *thread_param) {
             wait4FirstInLine();
             activeThreads++;
             popEle = pop();
-            checkErr(pthread_mutex_unlock(&queue_mutex));
+            checkErrThread(pthread_mutex_unlock(&queue_mutex));
         }
-        QueueNode *q = dir(popEle->path, thread_param);
-        checkErr(pthread_mutex_lock(&queue_mutex));
+        QueueNode *q = dir(popEle->path, thread_param,checkErrThread);
+        checkErrThread(pthread_mutex_lock(&queue_mutex));
         insert(q, &firstInLine);
-        checkErr(pthread_cond_broadcast(&queue_cv));
-        checkErr(pthread_mutex_unlock(&queue_mutex));
+        checkErrThread(pthread_cond_broadcast(&queue_cv));
+        checkErrThread(pthread_mutex_unlock(&queue_mutex));
 
     }
 
