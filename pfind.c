@@ -67,6 +67,19 @@ int endsWith(const char *str, const char *suffix) {
     return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
 }
 
+int isAfile(const char *path) {
+
+
+    struct stat fileStat;
+    lstat(path, &fileStat);
+    if(S_ISREG(fileStat.st_mode))
+    {
+        return 1;
+    }
+    return 0;
+
+}
+
 
 int shouldTrack(const char *path) {
 
@@ -83,7 +96,17 @@ int shouldTrack(const char *path) {
 
 void debug2(const QueueNode *newNode) { printf("%s \n", newNode->path); }
 
-QueueNode *dir(char *path) {
+void printIfFileAndMatches(const char *term, const QueueNode *newNode) {
+    if(isAfile(newNode->path))
+    {
+        if(strstr(newNode->path, term) != NULL)
+        {
+            printf("%s",newNode->path);
+        }
+    }
+}
+
+QueueNode *dir(char *path, char* term) {
     struct dirent *dp;
     DIR *dirp;
     dirp = opendir(path);
@@ -96,7 +119,7 @@ QueueNode *dir(char *path) {
         strcat(newNode->path, "/");
         strcat(newNode->path, dp->d_name);
         debug2(newNode);
-
+        printIfFileAndMatches(term, newNode);
         if (!shouldTrack(newNode->path)) {
             continue;
         }
@@ -144,7 +167,7 @@ void *thread_func(void *thread_param) {
             popEle = pop();
             pthread_mutex_unlock(&queue_mutex);
         }
-        QueueNode *q = dir(popEle->path);
+        QueueNode *q = dir(popEle->path,thread_param);
         pthread_mutex_lock(&queue_mutex);
         insert(q, &firstInLine);
         pthread_cond_broadcast(&queue_cv);
