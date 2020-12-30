@@ -123,13 +123,13 @@ int isAfile(const char *path) {
 }
 
 
-int shouldTrack(const char *path) {
+int shouldTrack(const char *path, void (*errChecker)(int)) {
 
     if (endsWith(path, "/.") || endsWith(path, "/..")) {
         return 0;
     }
     struct stat fileStat;
-    checkErrMain(lstat(path, &fileStat));
+    errChecker(lstat(path, &fileStat));
     const __mode_t mode = fileStat.st_mode;
     if (S_ISLNK(mode))
         return 0;
@@ -181,7 +181,7 @@ QueueNode *dir(char *path, char *term, void(*errChecker)(int)) {
         strcat(newNode->path, dp->d_name);
         debug2(newNode);
         checkIfFileAndProcess(term, newNode->path, dp->d_name);
-        if (!shouldTrack(newNode->path)) {
+        if (!shouldTrack(newNode->path, errChecker)) {
             continue;
         }
         insert(newNode, &localQueue);

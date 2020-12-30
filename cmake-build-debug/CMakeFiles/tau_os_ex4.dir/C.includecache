@@ -25,4 +25,6 @@ sys/stat.h
 -
 stdatomic.h
 -
+errno.h
+-
 
