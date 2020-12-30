@@ -95,7 +95,7 @@ QueueNode *dir(char *path) {
             continue;
         }
         insert(newNode, &localQueue);
-        printf("%s \n",path);
+        printf("%s \n",newNode->path);
 
     }
     closedir(dirp);
@@ -112,7 +112,7 @@ void wait4FirstInLine() {
     }
 }
 void wait4ZeroActive() {
-    printf("%d",activeThreads);
+    printf("%d before loop \n",activeThreads);
 
     while (activeThreads >0) {
         pthread_mutex_lock(&queue_mutex);
@@ -127,7 +127,6 @@ void *thread_func(void *thread_param) {
     //pthread_detach(pthread_self());
 
     while (1) {
-        printf("%d\n",activeThreads);
         QueueNode *popEle = NULL;
         while (popEle == NULL) {
             wait4FirstInLine();
@@ -138,6 +137,7 @@ void *thread_func(void *thread_param) {
         QueueNode *q = dir(popEle->path);
         pthread_mutex_lock(&queue_mutex);
         insert(q, &firstInLine);
+        pthread_cond_broadcast(&queue_cv);
         pthread_mutex_unlock(&queue_mutex);
 
     }
@@ -161,6 +161,5 @@ int main(int argc, const char *argv[]) {
     }
     wakeUpAll();
     wait4ZeroActive();
-    pthread_mutex_unlock(&queue_mutex);
     return 0;
 }
