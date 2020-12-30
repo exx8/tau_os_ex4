@@ -87,23 +87,31 @@ int shouldTrack(const char *path) {
     }
     struct stat fileStat;
     lstat(path, &fileStat);
-    if (S_ISLNK(fileStat.st_mode))
+    const __mode_t mode = fileStat.st_mode;
+    if (S_ISLNK(mode))
         return 0;
-    return S_ISDIR(fileStat.st_mode);
-
+    int isdir = S_ISDIR(mode);
+    if (!isdir)
+        return 0;
+    if (!(mode & S_IRUSR && mode & S_IXUSR)) {
+        printf("Directory %s: Permission denied.\n",path);
+        return 0;
+    }
+    return 1;
 }
 
 void debug2(const QueueNode *newNode) {
     return;
     printf("%s \n", newNode->path);
 }
+
 /**
  *
  * @param term
  * @param full_path the path must contain name!!!
  * @param name
  */
-void printIfFileAndMatches(const char *term, const char *full_path, const char * name) {
+void printIfFileAndMatches(const char *term, const char *full_path, const char *name) {
     if (isAfile(full_path)) {
         if (strstr(name, term) != NULL) {
             printf("%s\n", full_path);
@@ -124,7 +132,7 @@ QueueNode *dir(char *path, char *term) {
         strcat(newNode->path, "/");
         strcat(newNode->path, dp->d_name);
         debug2(newNode);
-        printIfFileAndMatches(term, newNode->path,dp->d_name);
+        printIfFileAndMatches(term, newNode->path, dp->d_name);
         if (!shouldTrack(newNode->path)) {
             continue;
         }
