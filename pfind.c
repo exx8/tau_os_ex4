@@ -18,6 +18,8 @@ static QueueNode *firstInLine = NULL;
 
 static pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t queue_cv = PTHREAD_COND_INITIALIZER;
+static pthread_cond_t activeThread_cv = PTHREAD_COND_INITIALIZER;
+
 static atomic_int activeThreads = 0;
 static atomic_bool errInThread = 0;
 static atomic_int howManyFiles = 0;
@@ -30,7 +32,7 @@ void exit_with_error_main(char *errorMsg) {
 void exit_with_error_thread(char *errorMsg) {
     fprintf(stderr, "%s", errorMsg);
     activeThreads--;
-    pthread_cond_broadcast(&queue_cv);
+    pthread_cond_broadcast(&activeThread_cv);
     pthread_exit(NULL);
 }
 
@@ -193,32 +195,31 @@ QueueNode *dir(char *path, char *term, void(*errChecker)(int)) {
 }
 
 void wait4FirstInLine() {
-    activeThreads--;
-    wakeUpAll();
-    checkErrThread(pthread_mutex_lock(&queue_mutex));
 
+    checkErrThread(pthread_mutex_lock(&queue_mutex));
+    activeThreads--;
+    checkErrMain(pthread_cond_broadcast(&activeThread_cv));
     while (firstInLine == NULL) {
         checkErrThread(pthread_cond_wait(&queue_cv, &queue_mutex));
     }
 }
 
 void debug1() {
-    return;
-    printf("%d wait4Zero \n", activeThreads);
+    fprintf(stderr,"%d wait4Zero \n", activeThreads);
 }
 
 void debug3() {
-    return;
-    printf("%d before loop \n", activeThreads);
+    fprintf(stderr,"%d before loop \n", activeThreads);
 }
 
 void wait4ZeroActive() {
     debug3();
 
     while (activeThreads > 0) {
-        checkErrMain(pthread_mutex_lock(&queue_mutex));
         debug1();
-        checkErrMain(pthread_cond_wait(&queue_cv, &queue_mutex));
+
+        checkErrMain(pthread_mutex_lock(&queue_mutex));
+        checkErrMain(pthread_cond_wait(&activeThread_cv, &queue_mutex));
         checkErrMain(pthread_mutex_unlock(&queue_mutex));
     }
 }
