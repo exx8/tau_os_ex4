@@ -36,16 +36,16 @@ void exit_with_error_thread(char *errorMsg) {
 
 void check_args(int argc) {
     if (argc != 4) {
-        exit_with_error_main("invalid num of args");
+        exit_with_error_main("invalid num of args\n");
     }
 }
 
 void genericErrMain() {
-    exit_with_error_main("an error has occurred");
+    exit_with_error_main("an error has occurred\n");
 }
 
 void genericErrThread() {
-    exit_with_error_thread("an error has occurred");
+    exit_with_error_thread("an error has occurred\n");
 }
 
 void checkErrMain(int status) {
@@ -147,6 +147,7 @@ void debug2(const QueueNode *newNode) {
     printf("%s \n", newNode->path);
 }
 
+
 /**
  *
  * @param term
@@ -155,8 +156,8 @@ void debug2(const QueueNode *newNode) {
  */
 void checkIfFileAndProcess(const char *term, const char *full_path, const char *name) {
     if (isAfile(full_path)) {
-        howManyFiles++;
         if (strstr(name, term) != NULL) {
+            howManyFiles++;
             printf("%s\n", full_path);
         }
     }
@@ -254,6 +255,10 @@ int main(int argc, char *argv[]) {
     strcpy((rootNode->path), root);
     if (shouldTrack(root, checkErrMain)) {
         insert(rootNode, &firstInLine);
+    }
+    else
+    {
+        genericErrMain();
     }
     for (int i = 0; i < thread_num; i++) {
         pthread_t thread_id;
