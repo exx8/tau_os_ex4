@@ -205,23 +205,26 @@ void wait4FirstInLine() {
 }
 
 void debug1() {
+    return;
     fprintf(stderr,"%d wait4Zero \n", activeThreads);
 }
 
 void debug3() {
+    return;
     fprintf(stderr,"%d before loop \n", activeThreads);
 }
 
 void wait4ZeroActive() {
     debug3();
+    checkErrMain(pthread_mutex_lock(&queue_mutex));
 
     while (activeThreads > 0) {
         debug1();
 
-        checkErrMain(pthread_mutex_lock(&queue_mutex));
         checkErrMain(pthread_cond_wait(&activeThread_cv, &queue_mutex));
-        checkErrMain(pthread_mutex_unlock(&queue_mutex));
     }
+    checkErrMain(pthread_mutex_unlock(&queue_mutex));
+
 }
 
 void *thread_func(void *thread_param) {

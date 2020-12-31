@@ -201,6 +201,12 @@ ProcessorCount_cmd_nproc:FILEPATH=/usr/bin/nproc
 ProcessorCount_cmd_sysctl:FILEPATH=/sbin/sysctl
 
 //Value Computed by CMake
+pfind_BINARY_DIR:STATIC=/home/eran/CLionProjects/tau_os_ex4/cmake-build-debug
+
+//Value Computed by CMake
+pfind_SOURCE_DIR:STATIC=/home/eran/CLionProjects/tau_os_ex4
+
+//Value Computed by CMake
 tau_os_ex4_BINARY_DIR:STATIC=/home/eran/CLionProjects/tau_os_ex4/cmake-build-debug
 
 //Value Computed by CMake
