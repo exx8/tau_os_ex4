@@ -193,9 +193,9 @@ QueueNode *dir(char *path, char *term, void(*errChecker)(int)) {
 }
 
 void wait4FirstInLine() {
+    checkErrThread(pthread_mutex_lock(&queue_mutex));
     activeThreads--;
     wakeUpAll();
-    checkErrThread(pthread_mutex_lock(&queue_mutex));
 
     while (firstInLine == NULL) {
         checkErrThread(pthread_cond_wait(&queue_cv, &queue_mutex));
