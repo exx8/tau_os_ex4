@@ -11,11 +11,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="881bb548-d427-49a8-9f50-53920ef69a56" name="Default Changelist" comment=".">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeError.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeError.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
+    <list default="true" id="881bb548-d427-49a8-9f50-53920ef69a56" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/tau_os_ex4.dir/pfind.c.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/tau_os_ex4.dir/pfind.c.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/tau_os_ex4" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/tau_os_ex4" afterDir="false" />
@@ -71,7 +67,7 @@
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="tau_os_ex4" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="&quot;$PROJECT_DIR$/test_filesystem&quot; &quot;ok_sqkiaa&quot; 35" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="tau_os_ex4" TARGET_NAME="tau_os_ex4" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="tau_os_ex4" RUN_TARGET_NAME="tau_os_ex4">
+    <configuration name="tau_os_ex4" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="&quot;$PROJECT_DIR$/test_filesystem&quot; &quot;netoby&quot; 1" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="tau_os_ex4" TARGET_NAME="tau_os_ex4" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="tau_os_ex4" RUN_TARGET_NAME="tau_os_ex4">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -98,14 +94,7 @@
       <workItem from="1609356218981" duration="1906000" />
       <workItem from="1609400573575" duration="651000" />
       <workItem from="1609401233981" duration="136000" />
-      <workItem from="1609458275203" duration="361000" />
-    </task>
-    <task id="LOCAL-00011" summary=".">
-      <created>1609197730510</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1609197730510</updated>
+      <workItem from="1609458275203" duration="788000" />
     </task>
     <task id="LOCAL-00012" summary=".">
       <created>1609197807159</created>
@@ -443,7 +432,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609401357497</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary=".">
+      <created>1609458932613</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1609458932614</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
