@@ -113,7 +113,6 @@ int endsWith(const char *str, const char *suffix) {
 
 int isAfile(const char *path) {
 
-
     struct stat fileStat;
     checkErrMain(lstat(path, &fileStat));
     if (S_ISREG(fileStat.st_mode)||S_ISLNK(fileStat.st_mode)) {
