@@ -116,7 +116,7 @@ int isAfile(const char *path) {
 
     struct stat fileStat;
     checkErrMain(lstat(path, &fileStat));
-    if (S_ISREG(fileStat.st_mode)) {
+    if (S_ISREG(fileStat.st_mode)||S_ISLNK(fileStat.st_mode)) {
         return 1;
     }
     return 0;
