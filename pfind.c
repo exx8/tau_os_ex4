@@ -68,10 +68,10 @@ void checkErrThread(int status, int holdLock) {
     }
 }
 
-QueueNode *newQueueNode() {
+QueueNode *newQueueNode(void(*errChecker)(int)) {
     void *pVoid = calloc(1, sizeof(QueueNode));
     if (!pVoid)
-        genericErrMain();
+        errChecker(1);
     return pVoid;
 }
 
@@ -182,7 +182,7 @@ QueueNode *dir(char *path, char *term, void(*errChecker)(int)) {
     while ((dp = readdir(dirp)) != NULL) {
 
 
-        QueueNode *newNode = newQueueNode();
+        QueueNode *newNode = newQueueNode(errChecker);
         strcpy(newNode->path, path);
         strcat(newNode->path, "/");
         strcat(newNode->path, dp->d_name);
@@ -261,7 +261,7 @@ int main(int argc, char *argv[]) {
     const char *root = argv[1];
     char *term = argv[2];
     const int thread_num = atoi(argv[3]);
-    QueueNode *rootNode = newQueueNode();
+    QueueNode *rootNode = newQueueNode(checkErrMain);
     strcpy((rootNode->path), root);
     if (shouldTrack(root, checkErrMain)) {
         insert(rootNode, &firstInLine);
