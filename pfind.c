@@ -273,7 +273,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < thread_num; i++) {
         pthread_t thread_id;
 
-         checkErrMain(pthread_create(&thread_id, NULL, thread_func, term));
+        checkErrMain(pthread_create(&thread_id, NULL, thread_func, term));
         activeThreads++;
     }
     wakeUpAll();
