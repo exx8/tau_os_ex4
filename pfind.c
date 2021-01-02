@@ -32,7 +32,9 @@ void exit_with_error_main(char *errorMsg) {
 void exit_with_error_thread(char *errorMsg) {
     fprintf(stderr, "%s", errorMsg);
     activeThreads--;
+    errInThread=1;
     pthread_cond_broadcast(&activeThread_cv);
+    pthread_mutex_unlock(&queue_mutex);
     pthread_exit(NULL);
 }
 
@@ -56,9 +58,13 @@ void checkErrMain(int status) {
     }
 }
 
-void checkErrThread(int status) {
+void checkErrThread(int status, int holdLock) {
     if (status != 0) {
+        if(!holdLock) {
+            pthread_mutex_lock(&queue_mutex);
+        }
         genericErrThread();
+
     }
 }
 
@@ -195,11 +201,11 @@ QueueNode *dir(char *path, char *term, void(*errChecker)(int)) {
 
 void wait4FirstInLine() {
 
-    checkErrThread(pthread_mutex_lock(&queue_mutex));
+    checkErrThread(pthread_mutex_lock(&queue_mutex), 1);
     activeThreads--;
     checkErrMain(pthread_cond_broadcast(&activeThread_cv));
     while (firstInLine == NULL) {
-        checkErrThread(pthread_cond_wait(&queue_cv, &queue_mutex));
+        checkErrThread(pthread_cond_wait(&queue_cv, &queue_mutex), 1);
     }
 }
 
@@ -225,10 +231,11 @@ void wait4ZeroActive() {
     checkErrMain(pthread_mutex_unlock(&queue_mutex));
 
 }
-
+void checkErrThread_noLock(int status)
+{
+    checkErrThread(status,0);
+}
 void *thread_func(void *thread_param) {
-
-    //pthread_detach(pthread_self());
 
     while (1) {
         QueueNode *popEle = NULL;
@@ -236,13 +243,13 @@ void *thread_func(void *thread_param) {
             wait4FirstInLine();
             activeThreads++;
             popEle = pop();
-            checkErrThread(pthread_mutex_unlock(&queue_mutex));
+            checkErrThread(pthread_mutex_unlock(&queue_mutex), 1);
         }
-        QueueNode *q = dir(popEle->path, thread_param, checkErrThread);
-        checkErrThread(pthread_mutex_lock(&queue_mutex));
+        QueueNode *q = dir(popEle->path, thread_param, checkErrThread_noLock);
+        checkErrThread(pthread_mutex_lock(&queue_mutex), 1);
         insert(q, &firstInLine);
-        checkErrThread(pthread_cond_broadcast(&queue_cv));
-        checkErrThread(pthread_mutex_unlock(&queue_mutex));
+        checkErrThread(pthread_cond_broadcast(&queue_cv), 1);
+        checkErrThread(pthread_mutex_unlock(&queue_mutex), 1);
 
     }
 
